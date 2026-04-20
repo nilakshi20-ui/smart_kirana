@@ -178,7 +178,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               ),
                             ),
                           ),
-                    ),
+                        ],
+                      ),
                   const SizedBox(height: 12),
                   Text(ownerName,
                       style: const TextStyle(
