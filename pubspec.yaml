@@ -68,8 +68,8 @@ dependencies:
 
   # Icons
   iconsax: ^0.0.8
-  image_picker: ^1.2.0
-  image_cropper: 7.0.0
+  image_picker: any
+  image_cropper: any
 
 dev_dependencies:
   flutter_test:
