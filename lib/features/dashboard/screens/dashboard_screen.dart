@@ -31,6 +31,7 @@ class DashboardScreen extends ConsumerWidget {
         user?.userMetadata?['shop_name'] as String? ?? 'My Store';
     final ownerName =
         user?.userMetadata?['owner_name'] as String? ?? 'Owner';
+    final profileUrl = user?.userMetadata?['profile_url'] as String?;
     final today = DateFormat('EEEE, d MMMM y').format(DateTime.now());
 
     return Scaffold(
@@ -76,13 +77,16 @@ class DashboardScreen extends ConsumerWidget {
                           child: CircleAvatar(
                             radius: 24,
                             backgroundColor: Colors.white.withOpacity(0.2),
-                            child: Text(
-                              ownerName.isNotEmpty ? ownerName[0].toUpperCase() : 'K',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold),
-                            ),
+                            backgroundImage: profileUrl != null ? NetworkImage(profileUrl) : null,
+                            child: profileUrl == null
+                                ? Text(
+                                    ownerName.isNotEmpty ? ownerName[0].toUpperCase() : 'K',
+                                    style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : null,
                           ),
                         ),
                       ],

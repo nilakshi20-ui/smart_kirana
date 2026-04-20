@@ -76,6 +76,45 @@ class _SettingsScreenState extends State<SettingsScreen> {
     }
   }
 
+  void _viewProfilePic(String url) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.all(20),
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            InteractiveViewer(
+              minScale: 0.5,
+              maxScale: 4.0,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: Image.network(
+                  url,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    if (loadingProgress == null) return child;
+                    return const Center(child: CircularProgressIndicator(color: Colors.white));
+                  },
+                  errorBuilder: (context, error, stackTrace) =>
+                      const Icon(Icons.error, color: Colors.white),
+                ),
+              ),
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                icon: const Icon(Icons.close, color: Colors.white, size: 30),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final user = SupabaseService.currentUser;
@@ -96,22 +135,27 @@ class _SettingsScreenState extends State<SettingsScreen> {
               decoration: BoxDecoration(gradient: AppTheme.primaryGradient),
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: _uploading ? null : _changeProfilePic,
-                    child: Stack(
-                      children: [
-                        CircleAvatar(
-                          radius: 40,
-                          backgroundColor: Colors.white.withOpacity(0.25),
-                          backgroundImage: profileUrl != null ? NetworkImage(profileUrl) : null,
-                          child: profileUrl == null
-                            ? Text(
-                                ownerName.isNotEmpty ? ownerName[0].toUpperCase() : 'O',
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 32,
-                                    fontWeight: FontWeight.bold),
-                              )
-                            : null,
+                  Stack(
+                    children: [
+                        GestureDetector(
+                          onTap: () {
+                            if (profileUrl != null) {
+                              _viewProfilePic(profileUrl);
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: 40,
+                            backgroundColor: Colors.white.withOpacity(0.25),
+                            backgroundImage: profileUrl != null ? NetworkImage(profileUrl) : null,
+                            child: profileUrl == null
+                                ? Text(
+                                    ownerName.isNotEmpty ? ownerName[0].toUpperCase() : 'O',
+                                    style: const TextStyle(
+                                        color: Colors.white, fontSize: 32,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                : null,
+                          ),
                         ),
                         if (_uploading)
                           const Positioned.fill(
@@ -121,19 +165,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           Positioned(
                             bottom: 0,
                             right: 0,
-                            child: Container(
-                              padding: const EdgeInsets.all(4),
-                              decoration: BoxDecoration(
-                                color: AppTheme.secondary,
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.white, width: 2),
+                            child: GestureDetector(
+                              onTap: _changeProfilePic,
+                              child: Container(
+                                padding: const EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.secondary,
+                                  shape: BoxShape.circle,
+                                  border: Border.all(color: Colors.white, width: 2),
+                                ),
+                                child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 14),
                               ),
-                              child: const Icon(Icons.camera_alt_rounded, color: Colors.white, size: 14),
                             ),
                           ),
-                      ],
                     ),
-                  ),
                   const SizedBox(height: 12),
                   Text(ownerName,
                       style: const TextStyle(
