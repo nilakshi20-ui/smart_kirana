@@ -29,6 +29,8 @@ node_modules/
 .pub-cache/
 .pub/
 /build/
+# Allow pre-built web files to be committed for CI deployment
+!/build/web/
 
 # Symbolication related
 app.*.symbols
